@@ -37,7 +37,7 @@ def usermask2tuple(usermask, default_server):
 _tag_regexp = re.compile('(?<!\S)(#[^ .,;:?!]{%i})' %
         (constants.MAX_TAG_LENGTH))
 def get_tags(content):
-    """Returns all tags from the text."""
+    """Returns all :ref:`concepts-tags` from the text."""
     return _tag_regexp.findall(content)
 
 def _tag_process_tree(tree, tags):
@@ -50,7 +50,7 @@ def _tag_process_tree(tree, tags):
         tree.update({tag: {}})
     _tag_process_tree(tree[tag], tags)
 def get_tag_tree(content):
-    """Returns all tags in the text, and processes :ref:`concepts-tag-tree`
+    """Returns all tags in the text, and processes :ref:`concepts-tag-trees`
     as dicts."""
     raw_tags = get_tags(content)
     tree = {}
