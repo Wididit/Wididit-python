@@ -18,6 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import re
+
+from wididit import constants
+
 def usermask2tuple(usermask, default_server):
     """Takes a usermask and returns a tuple (username, server).
 
@@ -29,3 +33,28 @@ def usermask2tuple(usermask, default_server):
         return tuple(parts)
     else:
         return (usermask, default_server)
+
+_tag_regexp = re.compile('(?<!\S)(#[^ .,;:?!]{%i})' %
+        (constants.MAX_TAG_LENGTH))
+def get_tags(content):
+    """Returns all tags from the text."""
+    return _tag_regexp.findall(content)
+
+def _tag_process_tree(tree, tags):
+    if len(tags) == 0:
+        return
+    tag = ''
+    while tag == '':
+        tag = tags.pop(0)
+    if tag not in tree:
+        tree.update({tag: {}})
+    _tag_process_tree(tree[tag], tags)
+def get_tag_tree(content):
+    """Returns all tags in the text, and processes :ref:`concepts-tag-tree`
+    as dicts."""
+    raw_tags = get_tags(content)
+    tree = {}
+    for tag in raw_tags:
+        tags = tag.split('#')
+        _tag_process_tree(tree, tags)
+    return tree
