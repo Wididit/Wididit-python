@@ -30,7 +30,7 @@ USERNAME_REGEXP = '[a-z0-9_-]{%(min)i,%(max)i}' % {
         'min': MIN_USERNAME_LENGTH,
         'max': MAX_USERNAME_LENGTH,
         }
-USERMASK_REGEXP = USERNAME_REGEXP + '@.*'
-USER_MIX_REGEXP = USERNAME_REGEXP + '(@.*)?'
+USERID_REGEXP = USERNAME_REGEXP + '@.*'
+USERID_MIX_REGEXP = USERNAME_REGEXP + '(@.*)?'
 """A regexp that allows both :ref:`wididit.constants.USERNAME_REGEXP` and
-:ref:`wididit_constants.USERMASK_REGEXP`."""
+:ref:`wididit_constants.USERID_REGEXP`."""

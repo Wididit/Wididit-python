@@ -22,17 +22,17 @@ import re
 
 from wididit import constants
 
-def usermask2tuple(usermask, default_server):
-    """Takes a usermask and returns a tuple (username, server).
+def userid2tuple(userid, default_server):
+    """Takes a userid and returns a tuple (username, server).
 
-    If the usermask contains '@', it will split it and return it as the tuple.
-    If not, returns the usermask and the default server."""
-    if '@' in usermask:
-        parts = usermask.split('@')
+    If the userid contains '@', it will split it and return it as the tuple.
+    If not, returns the userid and the default server."""
+    if '@' in userid:
+        parts = userid.split('@')
         assert len(parts) == 1
         return tuple(parts)
     else:
-        return (usermask, default_server)
+        return (userid, default_server)
 
 _tag_regexp = re.compile('(?<!\S)(#[^ .,;:?!]{%i})' %
         (constants.MAX_TAG_LENGTH))
