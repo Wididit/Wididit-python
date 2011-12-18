@@ -34,7 +34,7 @@ def userid2tuple(userid, default_server):
     else:
         return (userid, default_server)
 
-_tag_regexp = re.compile('(?<!\S)(#[^ .,;:?!]{%i})' %
+_tag_regexp = re.compile('(?<!\S)(#[^ .,;:?!]{,%i})' %
         (constants.MAX_TAG_LENGTH))
 def get_tags(content):
     """Returns all :ref:`concepts-tags` from the text."""
