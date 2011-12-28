@@ -26,8 +26,6 @@ from wididit import constants
 
 class TestTags(unittest.TestCase):
     def testConsistance(self):
-        self.assertGreater(constants.MAX_HOSTNAME_LENGTH,
-                constants.MIN_HOSTNAME_LENGTH)
         self.assertGreater(constants.MAX_USERNAME_LENGTH,
                 constants.MIN_USERNAME_LENGTH)
 
