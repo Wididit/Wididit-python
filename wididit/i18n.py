@@ -20,11 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import os
 import sys
 import gettext
 
 if 'unittest' in sys.modules:
     _ = lambda x:x
 else:
-    _ = gettext.translation('wididit-python')
+    try:
+        _ = gettext.translation('wididit-python')
+    except:
+        path = os.path.join(sys.prefix, 'local', 'share', 'locale')
+        _ = gettext.translation('wididit-python', localedir=path)
 
