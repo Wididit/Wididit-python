@@ -32,4 +32,4 @@ class Forbidden(ServerException):
     """Action not authorized."""
     def __init__(self, action):
         super(Forbidden, self).__init__(
-                ('You are not authorized to %(action)s.') % {'action': action})
+                _('You are not authorized to %(action)s.') % {'action': action})
