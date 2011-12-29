@@ -18,7 +18,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import constants, utils, exceptions
-from server import Server
-from people import People
-from entry import Entry
+from wididit.i18n import _
+
+class WididitException(Exception):
+    """Base exception for Wididit library."""
+    pass
+
+class ServerException(WididitException):
+    """Base exception for server errors."""
+    pass
+
+class Forbidden(ServerException):
+    """Action not authorized."""
+    def __init__(self, action):
+        super(Forbidden, self).__init__(
+                ('You are not authorized to %(action)s.') % {'action': action})

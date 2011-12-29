@@ -18,7 +18,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import constants, utils, exceptions
-from server import Server
-from people import People
-from entry import Entry
+class WididitObject(object):
+    """Base class for all Wididit classes.
+
+    All subclasses of this class are parametric singletons, according to the
+    parameters they give to super()'s __new__.
+    """
+    __instances = {}
+    def __new__(cls, *args):
+        if cls not in cls.__instances:
+            cls.__instances[cls] = {}
+        if args not in cls.__instances[cls]:
+            instance = object.__new__(cls)
+            instance.__parameters = args
+            cls.__instances[cls][args] = instance
+        return cls.__instances[cls][args]
+
+    def __eq__(self, other):
+        return other is self
+
+    def __repr__(self):
+        return '%s.%s(%s)' % (
+                self.__class__.__module__,
+                self.__class__.__name__,
+                ', '.join([repr(x) for x in self.__parameters])
+                )

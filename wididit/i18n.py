@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Copyright (C) 2011, Valentin Lorentz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,7 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import constants, utils, exceptions
-from server import Server
-from people import People
-from entry import Entry
+import sys
+import gettext
+
+if 'unittest' in sys.modules:
+    _ = lambda x:x
+else:
+    _ = gettext.translation('wididit-python')
+

@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import constants, utils, exceptions
-from server import Server
-from people import People
-from entry import Entry
+from wididitobject import WididitObject
+
+class Entry(WididitObject):
+    pass
