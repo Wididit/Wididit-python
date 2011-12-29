@@ -4,3 +4,5 @@ build
 *~
 *.swp
 *.pyc
+po/*.pot
+po/POTFILES.in
