@@ -26,6 +26,7 @@ import unittest
 import requests
 
 import wididit
+from wididit import exceptions
 from wididit import Server, People
 from wididittestcase import WididitTestCase
 
@@ -74,6 +75,13 @@ class TestPeople(WididitTestCase):
         self.assertEqual(self.queries.pop(),
                 ('people', 'tester@test.wididit.net', {'biography': 'foo'}))
         self.assertEqual(people.biography, 'foo')
+
+    def testAuthentication(self):
+        people = People('tester', 'test.wididit.net', 'foo')
+        self.assertEqual(people.biography,
+                'biography of user tester@test.wididit.net')
+        self.assertRaises(exceptions.Forbidden, setattr,
+                people, 'biography', 'foo')
 
 if __name__ == '__main__':
     unittest.main()
