@@ -123,6 +123,11 @@ class Entry(WididitObject):
 
     @property
     def as_serializable(self):
+        """A serializable representation of this Entry.
+
+        It is composed of basic data, such as integers, strings, None, lists
+        and integers.
+        """
         dict_ = {}
         for name in self._fields:
             dict_[name] = getattr(self, name)
