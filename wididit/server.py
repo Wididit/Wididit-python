@@ -22,6 +22,7 @@ import json
 import base64
 import requests
 
+
 import wididit
 from wididit.wididitobject import WididitObject
 
@@ -50,7 +51,13 @@ class RealServer(WididitObject):
 
     @property
     def api_base(self):
+        if hasattr(self, '_api_base'):
+            return self._api_base
         return 'http://%s/api/json' % self._hostname
+    def _force_api_base(self, value):
+        """For debugging purposes.
+        """
+        self._api_base = value
 
     def get_connected_as(self):
         return self._connected_as
@@ -63,24 +70,30 @@ class RealServer(WididitObject):
             'The People instance used to connect to authenticate to the '
             'server.')
 
-    def _auth(self, headers):
-        """Add the authentication token if any.
-
-        :param headers: The headers to be modified.
+    @property
+    def real_username(self):
+        """Ask the server "Who am I?"
         """
-        if self.connected_as is not None:
-            token = base64.b64encode(':'.join([self.connected_as.username,
-                    self.connected_as.password]))
-            headers.update({'HTTP_AUTHORIZATION': 'Basic ' + token})
-        return headers
+        response = self.get('/whoami/')
+        if response.status_code != 200:
+            return None
+        reply = self.unserialize(response.content)
+        return '%s@%s' % (reply['username'], reply['server']['hostname'])
+
+    @property
+    def _auth(self):
+        """The authentication tuple, if any.
+        """
+        if self.connected_as is None:
+            return None
+        else:
+            return (self.connected_as.username, self.connected_as.password)
     def _auth_on_kwargs(self, kwargs):
         """Add the authentication token, if any.
 
         :param kwargs: The keyword-arguments, as ``requests`` take them.
         """
-        if 'headers' not in kwargs:
-            kwargs['headers'] = {}
-        kwargs['headers'] = self._auth(kwargs['headers'])
+        kwargs['auth'] = self._auth
         return kwargs
 
     def _get(self, url, **kwargs):
