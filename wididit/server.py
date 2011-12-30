@@ -143,13 +143,15 @@ class RealServer(WididitObject):
         kwargs = self._auth_on_kwargs(kwargs)
         return self._delete(url, **kwargs)
 
-    def serialize(self, data):
+    @staticmethod
+    def serialize(data):
         """Serialize data to be sent to the server.
 
         :param data: The data to be serialized."""
         return json.dumps(data)
 
-    def unserialize(self, data):
+    @staticmethod
+    def unserialize(data):
         """Unserialize data from the server.
 
         :param data: The data to be unserialized."""

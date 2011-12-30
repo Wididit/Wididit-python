@@ -62,9 +62,9 @@ class TestPeople(WididitTestCase):
         people2 = People('tester', 'test.wididit.net')
         people3 = People('tester', 'test2.wididit.net')
         people4 = People('tester2', 'test.wididit.net')
-        self.assertIs(people, people2)
-        self.assertIsNot(people, people3)
-        self.assertIsNot(people, people4)
+        self.assertEqual(people, people2)
+        self.assertNotEqual(people, people3)
+        self.assertNotEqual(people, people4)
 
     def testBiography(self):
         people = People('tester', 'test.wididit.net', 'foo', connect=True)

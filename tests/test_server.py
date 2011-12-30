@@ -38,8 +38,8 @@ class TestServer(WididitTestCase):
         self.assertEqual(server.get('foobar'), '->foobar<-')
         server2 = Server('test.wididit.net')
         server3 = Server('test2.wididit.net')
-        self.assertIs(server, server2)
-        self.assertIsNot(server, server3)
+        self.assertEqual(server, server2)
+        self.assertNotEqual(server, server3)
 
 if __name__ == '__main__':
     unittest.main()

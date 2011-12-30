@@ -21,28 +21,36 @@
 class WididitObject(object):
     """Base class for all Wididit classes.
 
-    All subclasses of this class are parametric singletons, according to the
-    parameters they give to super()'s __new__.
+    All subclasses of this class with _singleton=True are parametric singletons,
+    according to the parameters they give to super()'s __new__.
+    This class also provides __repr__ and __eq__ based on class and parameters
+    given to super()'s __new__.
     """
+    _singleton = False
     __instances = {}
     def __new__(cls, *args):
+        if not cls._singleton:
+            instance = object.__new__(cls)
+            instance._parameters = args
+            return instance
         if cls not in cls.__instances:
             cls.__instances[cls] = {}
         if args not in cls.__instances[cls]:
             instance = object.__new__(cls)
-            instance.__parameters = args
+            instance._parameters = args
             cls.__instances[cls][args] = instance
         return cls.__instances[cls][args]
-
-    def __eq__(self, other):
-        return other is self
 
     def __repr__(self):
         return '%s.%s(%s)' % (
                 self.__class__.__module__,
                 self.__class__.__name__,
-                ', '.join([repr(x) for x in self.__parameters])
+                ', '.join([repr(x) for x in self._parameters])
                 )
+
+    def __eq__(self, other):
+        return self.__class__ is other.__class__ and \
+                self._parameters == other._parameters
 
     def sync(self):
         """Update the state of this object.

@@ -36,6 +36,7 @@ class People(WididitObject):
                     as this user.
     """
     def __new__(cls, username, hostname, *args, **kwargs):
+        assert None not in (username, hostname)
         return super(People, cls).__new__(cls, username, hostname)
 
     def __init__(self, username, hostname, password=None, connect=False):
@@ -48,15 +49,12 @@ class People(WididitObject):
             self._server = Server(hostname)
         self.sync()
 
-    def __eq__(self, other):
-        return other is self
-
     @staticmethod
     def from_anything(data):
         """Return a People instance from any supported representation.
 
-        Supported representation are People instances, userid strings, and
-        (username, hostname) tuple.
+        Supported representation are People instances, userid strings,
+        (username, hostname) tuples, and dictionnaries from server reply.
 
         :param data: A representation of a People object.
         """
@@ -67,8 +65,13 @@ class People(WididitObject):
             return People(username, hostname)
         elif isinstance(data, tuple) and len(data) == 2:
             return People(*data)
+        elif isinstance(data, dict) and 'username' in data and \
+                'server' in data and isinstance(data['server'], dict) and \
+                'hostname' in data['server']:
+            return People(data['username'], data['server']['hostname'])
         else:
-            raise ValueError('Invalid representation of People object.')
+            raise ValueError('Invalid representation of People object: %r' %
+                    data)
 
     def _sync(self):
         response = self.server.get(self.api_path)
