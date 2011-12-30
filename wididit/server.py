@@ -43,6 +43,9 @@ class RealServer(WididitObject):
     def __repr__(self):
         return "wididit.server.Server('%s')" % self.hostname
 
+    def _sync(self):
+        pass
+
     @property
     def hostname(self):
         """The hostname of the server. It should be unique across the whole
@@ -168,5 +171,3 @@ class FakeServer(RealServer):
     def _delete(self, url, **kwargs):
         return wididit._test_callback.delete(url, **kwargs)
 
-import sys
-Server = FakeServer if 'unittest' in sys.modules else RealServer

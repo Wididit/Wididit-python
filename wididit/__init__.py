@@ -18,7 +18,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+__all__ = ['constants', 'utils', 'exceptions', 'Server', 'People', 'Entry']
+
+import sys
+
 import constants, utils, exceptions
-from server import Server
+if 'unittest' in sys.modules:
+    from server import FakeServer as Server
+else:
+    from server import RealServer as Server
+# Avoid Sphinx telling "Server: alias of RealServer"
+# (and probably useful for developpers using this library).
+Server.__name__ = 'Server'
+
 from people import People
 from entry import Entry

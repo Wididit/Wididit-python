@@ -43,3 +43,11 @@ class WididitObject(object):
                 self.__class__.__name__,
                 ', '.join([repr(x) for x in self.__parameters])
                 )
+
+    def sync(self):
+        """Update the state of this object.
+
+        This method updates attributes of this object according to server, but
+        also discards all modifications you made without saving it.
+        However, all modifications are saved by default."""
+        self._sync()

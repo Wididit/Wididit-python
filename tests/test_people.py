@@ -73,7 +73,9 @@ class TestPeople(WididitTestCase):
         self.queries = []
         people.biography = 'foo'
         self.assertEqual(self.queries.pop(),
-                ('people', 'tester@test.wididit.net', {'biography': 'foo'}))
+                ('people', 'tester@test.wididit.net', {
+                    'username': 'tester',
+                    'biography': 'foo'}))
         self.assertEqual(people.biography, 'foo')
 
     def testAuthentication(self):
@@ -82,6 +84,14 @@ class TestPeople(WididitTestCase):
                 'biography of user tester@test.wididit.net')
         self.assertRaises(exceptions.Forbidden, setattr,
                 people, 'biography', 'foo')
+
+    def testFromAnything(self):
+        people = People.from_anything('tester@dev.progval.42')
+        self.assertEqual(people.userid, 'tester@dev.progval.42')
+        people = People.from_anything(people)
+        self.assertEqual(people.userid, 'tester@dev.progval.42')
+        people = People.from_anything(('tester', 'dev.progval.42'))
+        self.assertEqual(people.userid, 'tester@dev.progval.42')
 
 if __name__ == '__main__':
     unittest.main()

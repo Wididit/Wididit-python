@@ -20,6 +20,7 @@
 
 import requests
 
+from wididit import utils
 from wididit.i18n import _
 from wididit import Server
 from wididit import exceptions
@@ -30,6 +31,9 @@ class People(WididitObject):
 
     :param username: The username of the user.
     :param hostname: The hostname of the server where the user is registered.
+    :param password: An optionnal parameter used if you want to connect.
+    :param connect: Defines whether or not you will connect to the server
+                    as this user.
     """
     def __new__(cls, username, hostname, *args, **kwargs):
         return super(People, cls).__new__(cls, username, hostname)
@@ -47,12 +51,26 @@ class People(WididitObject):
     def __eq__(self, other):
         return other is self
 
-    def sync(self):
-        """Update the state of this object.
+    @staticmethod
+    def from_anything(data):
+        """Return a People instance from any supported representation.
 
-        This method updates attributes of this object according to server, but
-        also discards all modifications you made without saving it.
-        However, all modifications are saved by default."""
+        Supported representation are People instances, userid strings, and
+        (username, hostname) tuple.
+
+        :param data: A representation of a People object.
+        """
+        if isinstance(data, People):
+            return data
+        elif isinstance(data, str) or isinstance(data, unicode):
+            username, hostname = utils.userid2tuple(data)
+            return People(username, hostname)
+        elif isinstance(data, tuple) and len(data) == 2:
+            return People(*data)
+        else:
+            raise ValueError('Invalid representation of People object.')
+
+    def _sync(self):
         response = self.server.get(self.api_path)
         if response.status_code != requests.codes.ok:
             raise exceptions.ServerException(response.status_code)
