@@ -30,6 +30,10 @@ else:
     try:
         _ = gettext.translation('wididit-python')
     except:
-        path = os.path.join(sys.prefix, 'local', 'share', 'locale')
-        _ = gettext.translation('wididit-python', localedir=path)
+        try:
+            path = os.path.join(sys.prefix, 'local', 'share', 'locale')
+            _trans = gettext.translation('wididit-python', localedir=path)
+            _ = trans.gettext
+        except:
+            _ = lambda x:x
 
