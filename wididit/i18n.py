@@ -33,7 +33,7 @@ else:
         try:
             path = os.path.join(sys.prefix, 'local', 'share', 'locale')
             _trans = gettext.translation('wididit-python', localedir=path)
-            _ = trans.gettext
+            _ = _trans.gettext
         except:
             _ = lambda x:x
 
