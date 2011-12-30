@@ -22,7 +22,7 @@ import re
 
 from wididit import constants
 
-def userid2tuple(userid, default_server):
+def userid2tuple(userid, default_server=None):
     """Takes a userid and returns a tuple (username, server).
 
     If the userid contains '@', it will split it and return it as the tuple.
@@ -32,6 +32,8 @@ def userid2tuple(userid, default_server):
         assert len(parts) in (1, 2)
         return tuple(parts)
     else:
+        if default_server is None:
+            raise ValueError()
         return (userid, default_server)
 
 _tag_regexp = re.compile('(?<!\S)(#[^ .,;:?!]{,%i})' %
