@@ -55,7 +55,7 @@ class People(WididitObject):
         However, all modifications are saved by default."""
         response = self.server.get(self.api_path)
         if response.status_code != requests.codes.ok:
-            raise exceptions.ServerException()
+            raise exceptions.ServerException(response.status_code)
         response = self.server.unserialize(response.content)
         self._biography = response['biography']
 
@@ -86,7 +86,7 @@ class People(WididitObject):
         if response.status_code == requests.codes.forbidden:
             raise exceptions.Forbidden(_('change the password'))
         elif response.status_code != requests.codes.ok:
-            raise exception.ServerException()
+            raise exceptions.ServerException(response.status_code)
         self._password = value
     password = property(get_password, set_password,
             'The password of the user.')
@@ -94,11 +94,16 @@ class People(WididitObject):
     def get_biography(self):
         return self._biography
     def set_biography(self, value):
-        response = self.server.put(self.api_path, data={'biography': value})
+        response = self.server.put(self.api_path, data={
+            'username': self.username,
+            'biography': value
+            })
         if response.status_code == requests.codes.forbidden:
             raise exceptions.Forbidden(_('change the biography'))
+        elif response.status_code == requests.codes.unauthorized:
+            raise exceptions.Forbidden(_('change the biography'))
         elif response.status_code != requests.codes.ok:
-            raise exception.ServerException()
+            raise exceptions.ServerException(response.status_code)
         self._biography = value
     biography = property(get_biography, set_biography,
             'The biography of the user.')
