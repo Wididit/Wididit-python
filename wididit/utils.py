@@ -29,7 +29,7 @@ def userid2tuple(userid, default_server):
     If not, returns the userid and the default server."""
     if '@' in userid:
         parts = userid.split('@')
-        assert len(parts) == 1
+        assert len(parts) in (1, 2)
         return tuple(parts)
     else:
         return (userid, default_server)
