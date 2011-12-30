@@ -47,7 +47,7 @@ class TestPeople(WididitTestCase):
         return response
     def put(self, url, data, headers={}, **kwargs):
         response = requests.Response()
-        if 'HTTP_AUTHORIZATION' not in headers:
+        if 'auth' not in kwargs or kwargs['auth'] is None:
             response.status_code = requests.codes.forbidden
         elif url.startswith('/people/'):
             userid = url.split('/')[2]
