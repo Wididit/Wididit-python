@@ -28,6 +28,19 @@ class ServerException(WididitException):
     """Base exception for server errors."""
     pass
 
+class Unreachable(ServerException):
+    """Server cannot be reached."""
+    def __init__(self, hostname):
+        super(Unreachable, self).__init__(
+                _('Server %(hostname)s cannot be reached.') %
+                {'hostname': hostname})
+
+class NotFound(ServerException):
+    """Object does not exist."""
+    def __init__(self, object_):
+        super(NotFound, self).__init__(
+                _('%(object)s cannot be found.') % {'object': object_})
+
 class Forbidden(ServerException):
     """Action not authorized."""
     def __init__(self, action):

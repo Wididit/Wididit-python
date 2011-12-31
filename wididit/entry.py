@@ -22,6 +22,7 @@ import time
 import requests
 
 from wididit import utils
+from wididit.i18n import _
 from wididit import People
 from wididit import exceptions
 from wididit.wididitobject import WididitObject
@@ -86,6 +87,11 @@ class Entry(WididitObject):
         """The ID of this entry."""
         return self._id
 
+    @property
+    def entryid(self):
+        """The EntryID of this entry."""
+        return '%s/%s' % (self.author.userid, self.id)
+
     content = editable_property_factory('content', str)
     category = editable_property_factory('category', str)
     contributors = editable_property_factory('contributors', list)
@@ -140,7 +146,9 @@ class Entry(WididitObject):
         if initial_data is None:
             assert self.id is not None
             response = self.author.server.get(self.api_path)
-            if response.status_code != requests.codes.ok:
+            if response.status_code == requests.codes.not_found:
+                raise exceptions.NotFound(_('entry %s') % self.entryid)
+            elif response.status_code != requests.codes.ok:
                 raise exceptions.ServerException(response.status_code)
             reply = self.author.server.unserialize(response.content)
             self._content = reply['content']

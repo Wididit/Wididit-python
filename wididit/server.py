@@ -24,6 +24,8 @@ import requests
 
 
 import wididit
+from wididit.i18n import _
+from wididit import exceptions
 from wididit.wididitobject import WididitObject
 
 
@@ -108,7 +110,10 @@ class RealServer(WididitObject):
         :param **kwargs: Optional arguments that ``requests`` takes.
         """
         kwargs = self._auth_on_kwargs(kwargs)
-        return self._get(url, **kwargs)
+        try:
+            return self._get(url, **kwargs)
+        except requests.exceptions.ConnectionError:
+            raise exceptions.Unreachable(self.hostname)
 
     def _post(self, url, **kwargs):
         return requests.post(self.api_base + url, **kwargs)
@@ -119,7 +124,10 @@ class RealServer(WididitObject):
         :param **kwargs: Optional arguments that ``requests`` takes.
         """
         kwargs = self._auth_on_kwargs(kwargs)
-        return self._post(url, **kwargs)
+        try:
+            return self._post(url, **kwargs)
+        except requests.exceptions.ConnectionError:
+            raise exceptions.Unreachable(self.hostname)
 
     def _put(self, url, **kwargs):
         return requests.put(self.api_base + url, **kwargs)
@@ -130,7 +138,10 @@ class RealServer(WididitObject):
         :param **kwargs: Optional arguments that ``requests`` takes.
         """
         kwargs = self._auth_on_kwargs(kwargs)
-        return self._put(url, **kwargs)
+        try:
+            return self._put(url, **kwargs)
+        except requests.exceptions.ConnectionError:
+            raise exceptions.Unreachable(self.hostname)
 
     def _delete(self, url, **kwargs):
         return requests.delete(self.api_base + url, **kwargs)
@@ -141,7 +152,10 @@ class RealServer(WididitObject):
         :param **kwargs: Optional arguments that ``requests`` takes.
         """
         kwargs = self._auth_on_kwargs(kwargs)
-        return self._delete(url, **kwargs)
+        try:
+            return self._delete(url, **kwargs)
+        except requests.exceptions.ConnectionError:
+            raise exceptions.Unreachable(self.hostname)
 
     @staticmethod
     def serialize(data):

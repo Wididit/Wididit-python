@@ -75,7 +75,9 @@ class People(WididitObject):
 
     def _sync(self):
         response = self.server.get(self.api_path)
-        if response.status_code != requests.codes.ok:
+        if response.status_code == requests.codes.not_found:
+            raise exceptions.NotFound(_('user %s') % self.userid)
+        elif response.status_code != requests.codes.ok:
             raise exceptions.ServerException(response.status_code)
         response = self.server.unserialize(response.content)
         self._biography = response['biography']
