@@ -46,8 +46,14 @@ class TestPeople(WididitTestCase):
             # The server is free to set whatever it wants whenever it wants;
             # the library should allow that.
             data = {
+                    'id': 1,
                     'content': 'the content',
-                    'author': 'tester@test.wididit.net',
+                    'author': {
+                        'username': 'tester',
+                        'server': {
+                            'hostname': 'test.wididit.net',
+                        },
+                    },
                     'category': '',
                     'contributors': [],
                     'generator': 'the generator',
@@ -60,6 +66,11 @@ class TestPeople(WididitTestCase):
                     'updated': '2011-12-30 15:55:05',
                     }
             response.status_code = requests.codes.ok
+            if len(url) == len('/entry/'):
+                data = [data]
+            if 'data' in kwargs and 'author' in kwargs['data']:
+                if 'tester@test.wididit.net' not in kwargs['data']['author']:
+                    data = []
             response._content = Server.serialize(data)
         else:
             response.status_code = requests.codes.forbidden
@@ -93,6 +104,18 @@ class TestPeople(WididitTestCase):
         self.assertEqual(entry.content, 'the content')
         tester = People('tester', 'test.wididit.net')
         self.assertEqual(entry.author, tester)
+
+    def testQuery(self):
+        server = wididit.Server('test.wididit.net')
+        tester = wididit.People('tester', 'test.wididit.net')
+        tester2 = wididit.People('tester2', 'test.wididit.net')
+        self.assertRaises(AssertionError, Entry.Query, server)
+        self.assertEqual(len(Entry.Query(server, Entry.Query.MODE_ALL) \
+                .fetch()), 1)
+        self.assertEqual(len(Entry.Query(server, Entry.Query.MODE_ALL) \
+                .filterAuthor(tester).fetch()), 1)
+        self.assertEqual(len(Entry.Query(server, Entry.Query.MODE_ALL) \
+                .filterAuthor(tester2).fetch()), 0)
 
 
 if __name__ == '__main__':

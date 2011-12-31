@@ -45,7 +45,6 @@ def editable_property_factory(name, assert_type=None, docstring=None):
         elif response.status_code == requests.codes.forbidden:
             raise exceptions.Forbidden(_('edit this entry'))
         else:
-            print response.content
             raise exceptions.ServerException(response.status_code)
     return property(get_property, set_property, docstring)
 
@@ -177,3 +176,98 @@ class Entry(WididitObject):
             else:
                 self._id = int(response.content)
                 self._sync()
+
+    class Query(object):
+        """Get entries from the server.
+
+        Queries are lazy. They perform the request to the server as late as
+        possible (that's to say when you access items).
+
+        As all filtering methods return the query itself, you can chain calls:
+        .. code-block::
+
+            server = Server('example.com')
+            entries = Query(server).filterAuthor('ProgVal') \
+                    .filterContent('lol').filterContent('test').fetch()
+        """
+        MODE_ALL = 1
+        """Fetch entries from all sources."""
+        MODE_TIMELINE = 2
+        """Fetch entries only from user's subscriptions. Only available if
+        you are connected to the server."""
+        def __init__(self, server, mode=MODE_TIMELINE):
+            self._server = server
+            if mode == self.MODE_ALL:
+                self._url = '/entry/'
+            elif mode == self.MODE_TIMELINE:
+                assert server.connected_as is not None
+                self._url = '/entry/timeline/'
+            else:
+                raise ValueError('Invalid mode.')
+            self._data = {}
+
+        def filterAuthor(self, author):
+            """Only get results by this author.
+
+            Using this method twice is handled as a OR clause by the server.
+
+            :param author: A valid representation of a people.
+            """
+            if 'author' not in self._data:
+                self._data['author'] = []
+            self._data['author'].append(People.from_anything(author).userid)
+            return self
+
+        def filterContent(self, text):
+            """Only get results containing this text.
+
+            Using this method twice is handled as a AND clause by the server.
+
+            :param text: Some text to be filtered.
+            """
+            if 'content' not in self._data:
+                self._data['content'] = []
+            self._data['content'].append(text)
+            return self
+
+        def native(self, value=True):
+            """(Dis)allow native queries. If this method is not called, it
+            defaults to True.
+
+            See also :py:meth:`wididit.Entry.Query.shared`.
+
+            :param value: Defines whether native entries are allowed or not.
+            """
+            if value and 'nonative' in self._data:
+                del self._data['nonative']
+            elif not value:
+                self._data['nonative'] = None
+            return self
+
+        def shared(self, value=False):
+            """(Dis)allow shared queries. If this method is not called, it
+            defaults to False.
+
+            See also :py:meth:`wididit.Entry.Query.native`.
+
+            :param value: Defines whether shared entries are allowed or not.
+            """
+            if value:
+                self._data['shared'] = None
+            elif not value and 'shared' in self._data:
+                del self._data['shared']
+            return self
+
+        def fetch(self):
+            """Return all entries matching this query.
+            """
+            response = self._server.get(self._url, data=self._data)
+            if response.status_code != requests.codes.ok:
+                raise exceptions.ServerException(response.status_code)
+            reply = self._server.unserialize(response.content)
+            entries = []
+            for data in reply:
+                entry = Entry(People.from_anything(data['author']), data['id'],
+                    initial_data=data)
+                entries.append(entry)
+            return entries
