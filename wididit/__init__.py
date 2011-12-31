@@ -19,6 +19,7 @@
 # THE SOFTWARE.
 
 __all__ = ['constants', 'utils', 'exceptions', 'Server', 'People', 'Entry']
+__version__ = '0.1'
 
 import sys
 

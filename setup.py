@@ -26,6 +26,8 @@ import os
 from distutils.core import setup
 from DistUtilsExtra.command import *
 
+import wididit
+
 def recursive_listdir(base_path):
     files = []
     subdirectories = []
@@ -43,7 +45,7 @@ with open('po/POTFILES.in', 'a') as fd:
     fd.write('\n'.join(files))
 
 setup(name='wididit',
-      version='0.1',
+      version=wididit.__version__,
       description='The Wididit social network library',
       author='Valentin Lorentz',
       author_email='progval@gmail.com',
