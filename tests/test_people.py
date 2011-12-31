@@ -84,6 +84,8 @@ class TestPeople(WididitTestCase):
                 'biography of user tester@test.wididit.net')
         self.assertRaises(exceptions.Forbidden, setattr,
                 people, 'biography', 'foo')
+        people2 = People('tester', 'test.wididit.net')
+        self.assertEqual(people, people2)
 
     def testFromAnything(self):
         people = People.from_anything('tester@dev.progval.42')

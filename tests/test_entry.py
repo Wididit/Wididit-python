@@ -88,6 +88,12 @@ class TestPeople(WididitTestCase):
         self.assertEqual(entry.content, 'the content')
         self.assertEqual(entry.author.server.connected_as, tester)
 
+    def testGet(self):
+        entry = Entry('tester@test.wididit.net', 1)
+        self.assertEqual(entry.content, 'the content')
+        tester = People('tester', 'test.wididit.net')
+        self.assertEqual(entry.author, tester)
+
 
 if __name__ == '__main__':
     unittest.main()

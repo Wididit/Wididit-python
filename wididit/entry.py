@@ -63,9 +63,7 @@ class Entry(WididitObject):
         return super(Entry, cls).__new__(cls, author, id)
 
     def __init__(self, author, id=None, **initial_data):
-        assert isinstance(author, People), \
-                'author attribute should have been automatically converted' +\
-                'to People instance.'
+        author = People.from_anything(author)
         self._author = author
         self._id = id
         if id is None:
