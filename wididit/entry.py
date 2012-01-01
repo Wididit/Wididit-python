@@ -184,10 +184,11 @@ class Entry(WididitObject):
         possible (that's to say when you access items).
 
         As all filtering methods return the query itself, you can chain calls:
-        .. code-block::
+
+        .. code-block:: python
 
             server = Server('example.com')
-            entries = Query(server).filterAuthor('ProgVal') \
+            entries = Query(server).filterAuthor('ProgVal') \\
                     .filterContent('lol').filterContent('test').fetch()
         """
         MODE_ALL = 1
