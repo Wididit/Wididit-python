@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2011, Valentin Lorentz
+# Copyright (C) 2011-2012, Valentin Lorentz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,12 +28,13 @@ if 'unittest' in sys.modules:
     _ = lambda x:x
 else:
     try:
-        _ = gettext.translation('wididit-python')
+        _trans = gettext.translation('wididit-python')
+        _ = _trans.ugettext
     except:
         try:
             path = os.path.join(sys.prefix, 'local', 'share', 'locale')
             _trans = gettext.translation('wididit-python', localedir=path)
-            _ = _trans.gettext
+            _ = _trans.ugettext
         except:
             _ = lambda x:x
 
