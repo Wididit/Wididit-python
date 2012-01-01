@@ -205,7 +205,7 @@ class Entry(WididitObject):
                 self._url = '/entry/timeline/'
             else:
                 raise ValueError('Invalid mode.')
-            self._data = {}
+            self._params = {}
 
         def filterAuthor(self, author):
             """Only get results by this author.
@@ -214,9 +214,9 @@ class Entry(WididitObject):
 
             :param author: A valid representation of a people.
             """
-            if 'author' not in self._data:
-                self._data['author'] = []
-            self._data['author'].append(People.from_anything(author).userid)
+            if 'author' not in self._params:
+                self._params['author'] = []
+            self._params['author'].append(People.from_anything(author).userid)
             return self
 
         def filterContent(self, text):
@@ -226,9 +226,9 @@ class Entry(WididitObject):
 
             :param text: Some text to be filtered.
             """
-            if 'content' not in self._data:
-                self._data['content'] = []
-            self._data['content'].append(text)
+            if 'content' not in self._params:
+                self._params['content'] = []
+            self._params['content'].append(text)
             return self
 
         def native(self, value=True):
@@ -239,10 +239,10 @@ class Entry(WididitObject):
 
             :param value: Defines whether native entries are allowed or not.
             """
-            if value and 'nonative' in self._data:
-                del self._data['nonative']
+            if value and 'nonative' in self._params:
+                del self._params['nonative']
             elif not value:
-                self._data['nonative'] = None
+                self._params['nonative'] = None
             return self
 
         def shared(self, value=False):
@@ -254,15 +254,15 @@ class Entry(WididitObject):
             :param value: Defines whether shared entries are allowed or not.
             """
             if value:
-                self._data['shared'] = None
-            elif not value and 'shared' in self._data:
-                del self._data['shared']
+                self._params['shared'] = None
+            elif not value and 'shared' in self._params:
+                del self._params['shared']
             return self
 
         def fetch(self):
             """Return all entries matching this query.
             """
-            response = self._server.get(self._url, data=self._data)
+            response = self._server.get(self._url, params=self._params)
             if response.status_code != requests.codes.ok:
                 raise exceptions.ServerException(response.status_code)
             reply = self._server.unserialize(response.content)
