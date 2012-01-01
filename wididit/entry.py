@@ -178,7 +178,7 @@ class Entry(WididitObject):
                 self._sync()
 
     class Query(object):
-        """Get entries from the server.
+        """Get entries from the server. Default mode is MODE_TIMELINE.
 
         Queries are lazy. They perform the request to the server as late as
         possible (that's to say when you access items).
