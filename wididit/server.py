@@ -1,4 +1,4 @@
-# Copyright (C) 2011, Valentin Lorentz
+# Copyright (C) 2011-2012, Valentin Lorentz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -76,8 +76,8 @@ class RealServer(WididitObject):
             'server.')
 
     @property
-    def real_username(self):
-        """Ask the server "Who am I?"
+    def whoami(self):
+        """Ask the server "Who am I?" and return the userid.
         """
         response = self.get('/whoami/')
         if response.status_code != 200:
