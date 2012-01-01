@@ -1,4 +1,4 @@
-# Copyright (C) 2011, Valentin Lorentz
+# Copyright (C) 2011-2012, Valentin Lorentz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -101,6 +101,11 @@ class People(WididitObject):
     def api_path(self):
         """The path to this user in the API."""
         return '/people/%s/' % self.userid
+
+    @property
+    def authenticated(self):
+        """Query the server to check we are really authenticated."""
+        return self.server.whoami == self.userid
 
     def get_password(self):
         return self._password
