@@ -46,3 +46,12 @@ class Forbidden(ServerException):
     def __init__(self, action):
         super(Forbidden, self).__init__(
                 _('You are not authorized to %(action)s.') % {'action': action})
+
+
+class PeopleException(WididitException):
+    """Base exception for people errors."""
+    pass
+
+class PeopleNotInstanciable(PeopleException):
+    """The people instance cannot be constructed."""
+    pass
